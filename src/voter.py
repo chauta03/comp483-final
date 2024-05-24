@@ -12,3 +12,4 @@ class Voter:
         self.my_ID = random.randint(0, 2 ** 32 - 1)
 
     def create_vote(self):
+
