@@ -20,4 +20,4 @@ class CLA():
             if number not in self.validation_number_set:
                 self.validation_number_set.add(number)
                 return number
-        
+    

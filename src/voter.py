@@ -10,9 +10,9 @@ from cryptography.hazmat.primitives.asymmetric import padding
 
 class Voter:
 
-    def setup_voter(self):
-        self.CTF_public_key = CTF.get_public_key()
-        self.validation_num = CLA.random_validation_number()
+    def __init__(self, CLA_object, CTF_object):
+        self.CTF_public_key = CTF_object.get_public_key()
+        self.validation_num = CLA_object.random_validation_number()
 
         self.my_ID = random.randint(0, 2 ** 32 - 1)
 
