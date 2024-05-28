@@ -14,7 +14,7 @@ class CLA:
     # def __del__(self):
     #     self.validation_number_set.remove(self.validation_number)
 
-    def random_validation_number(self):
+    def get_random_validation_number(self):
         while True:
             number = random.randint(0, 2 ** 32 - 1)
 
@@ -26,7 +26,7 @@ class CLA:
                 return number
 
     def encrypt_validation_num(self, voter_public_key):
-        message = str(self.random_validation_number()).encode('utf-8')
+        message = str(self.get_random_validation_number()).encode('utf-8')
         ciphertext1 = voter_public_key.encrypt(
             message,
             padding.OAEP(

@@ -25,7 +25,7 @@ def main():
         voter_object.set_validation_num(CLA_object.encrypt_validation_num(voter_object.get_public_key()))
         cipher_votes.append(voter_object.create_vote(random.choice(candidates), CTF_public_key))
 
-    # CLA sends CTF its list of used validation numbers
+    # CLA sends CTF its list of used validation numbers (digitally unsecure, would happen physically in real world)
     CTF_object.update_validation_set(CLA_object.get_validation_numbers())
 
 
