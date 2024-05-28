@@ -21,7 +21,8 @@ def main():
     candidates = ["John", "Noah", "Sophie", "Lexi"]
     cipher_votes = []
     for _ in range(50):
-        voter_object = voter.Voter(CLA_object.random_validation_number())
+        voter_object = voter.Voter()
+        voter_object.set_validation_num(CLA_object.encrypt_validation_num(voter_object.get_public_key()))
         cipher_votes.append(voter_object.create_vote(random.choice(candidates), CTF_public_key))
 
     # CLA sends CTF its list of used validation numbers

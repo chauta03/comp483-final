@@ -1,4 +1,8 @@
 import random
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
 
 class CLA:
     def __init__(self):
@@ -20,3 +24,15 @@ class CLA:
             if number not in self.validation_number_set:
                 self.validation_number_set.add(number)
                 return number
+
+    def encrypt_validation_num(self, voter_public_key):
+        message = str(self.random_validation_number()).encode('utf-8')
+        ciphertext1 = voter_public_key.encrypt(
+            message,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None  # rarely used. Just leave it 'None'
+            )
+        )
+        return ciphertext1
