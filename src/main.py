@@ -22,12 +22,6 @@ def main():
     # Voter asks for shared key and sends public RSA key
     # CLA encrypts AES key with voter public key and sends back to voter along with AES encrypted number
 
-    voter_object = voter.Voter()
-    en_validation_num, en_AES_key, en_AES_iv = CLA_object.get_encrypted_val_num(voter_object.get_public_key())
-    voter_object.set_validation_num(en_validation_num, en_AES_key, en_AES_iv)
-
-
-
     candidates = ["John", "Noah", "Sophie", "Lexi"]
     cipher_votes = []
     for _ in range(50):
