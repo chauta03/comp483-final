@@ -9,7 +9,6 @@ def main():
     # Creates and initializes central institutions
     CLA_object = CLA.CLA()
     CTF_object = CTF.CTF()
-    CTF_public_key = CTF_object.get_public_key()
 
     # # Initialize a voter with a validation number and ID
     # voter_object = voter.Voter(CLA_object.random_validation_number())
@@ -35,7 +34,8 @@ def main():
         voter_object.set_validation_num(en_validation_num, en_AES_key, en_AES_iv)
 
         # Have voter send vote to CTF to tally
-        cipher_votes.append(voter_object.create_vote(random.choice(candidates), CTF_public_key))
+        en_vote, en_AES_key, en_AES_iv = voter_object.create_vote(random.choice(candidates), CTF_object.get_public_key())
+        CTF_object.tally_vote()
 
     # CLA sends CTF its list of used validation numbers (digitally unsecure, would happen physically in real world)
     CTF_object.update_validation_set(CLA_object.get_validation_numbers())
