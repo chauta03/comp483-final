@@ -2,6 +2,7 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+import AES
 
 class CTF:
 
@@ -25,22 +26,46 @@ class CTF:
         self.used_validation_set = validation_number_set
 
     # Decrypts vote
-    def decrypt_vote(self, cipher_vote):
-        recovered_vote = self.private_key.decrypt(
-            cipher_vote,
+    # def decrypt_vote(self, cipher_vote):
+    #     recovered_vote = self.private_key.decrypt(
+    #         cipher_vote,
+    #         padding.OAEP(
+    #             mgf=padding.MGF1(algorithm=hashes.SHA256()),
+    #             algorithm=hashes.SHA256(),
+    #             label=None  # rarely used. Just leave it 'None'
+    #         ))
+    #
+    #     return recovered_vote
+
+
+    def decrypt_vote(self, en_vote, en_AES_key, en_AES_iv):
+        AES_key = self.private_key.decrypt(
+            en_AES_key,
             padding.OAEP(
                 mgf=padding.MGF1(algorithm=hashes.SHA256()),
                 algorithm=hashes.SHA256(),
                 label=None  # rarely used. Just leave it 'None'
             ))
+        AES_key = AES_key
 
-        return recovered_vote
+        AES_iv = self.private_key.decrypt(
+            en_AES_iv,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None  # rarely used. Just leave it 'None'
+            ))
+        AES_iv = AES_iv
+
+        AES_manager = AES.EncryptionManager(AES_key, AES_iv)
+        AES_manager.update_decryptor(en_vote)
+        return AES_manager.finalize_decryptor().decode('utf-8')
 
     # Tallies an individual vote record
-    def tally_vote(self, cipher_vote):
+    def tally_vote(self, en_vote, en_AES_key, en_AES_iv):
 
         # Gets decrypted vote information
-        id, validation, candidate = self.decrypt_vote(cipher_vote).decode('utf-8').split(',')
+        id, validation, candidate = self.decrypt_vote(en_vote, en_AES_key, en_AES_iv).split(',')
 
         # Checks that vote is not from double voter
         if validation in self.used_validation_set:
