@@ -28,9 +28,13 @@ def main():
         # voter_object = voter.Voter()
         # voter_object.set_validation_num(CLA_object.encrypt_validation_num(voter_object.get_public_key()))
         # cipher_votes.append(voter_object.create_vote(random.choice(candidates), CTF_public_key))
+
+        # Create Voter and have voter get verification number
         voter_object = voter.Voter()
         en_validation_num, en_AES_key, en_AES_iv = CLA_object.get_encrypted_val_num(voter_object.get_public_key())
         voter_object.set_validation_num(en_validation_num, en_AES_key, en_AES_iv)
+
+        # Have voter send vote to CTF to tally
         cipher_votes.append(voter_object.create_vote(random.choice(candidates), CTF_public_key))
 
     # CLA sends CTF its list of used validation numbers (digitally unsecure, would happen physically in real world)

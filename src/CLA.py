@@ -68,14 +68,14 @@ class CLA:
                 self.validation_number_set.add(number)
                 return number
 
-    def encrypt_validation_num(self, voter_public_key):
-        message = str(self.get_random_validation_number()).encode('utf-8')
-        ciphertext1 = voter_public_key.encrypt(
-            message,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None  # rarely used. Just leave it 'None'
-            )
-        )
-        return ciphertext1
+    # def encrypt_validation_num(self, voter_public_key):
+    #     message = str(self.get_random_validation_number()).encode('utf-8')
+    #     ciphertext1 = voter_public_key.encrypt(
+    #         message,
+    #         padding.OAEP(
+    #             mgf=padding.MGF1(algorithm=hashes.SHA256()),
+    #             algorithm=hashes.SHA256(),
+    #             label=None  # rarely used. Just leave it 'None'
+    #         )
+    #     )
+    #     return ciphertext1
