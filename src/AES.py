@@ -11,8 +11,8 @@ class EncryptionManager:
                             backend=default_backend())
         self.encryptor = aesContext.encryptor()
         self.decryptor = aesContext.decryptor()
-        self.padder = padding.PKCS7(128).padder()
-        self.unpadder = padding.PKCS7(128).unpadder()
+        self.padder = padding.PKCS7(256).padder()       # TODO why does this break when 128?
+        self.unpadder = padding.PKCS7(256).unpadder()   # TODO why does this break when 128?
 
     def update_encryptor(self, plaintext):
         return self.encryptor.update(self.padder.update(plaintext))

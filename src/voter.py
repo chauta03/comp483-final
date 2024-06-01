@@ -74,6 +74,7 @@ class Voter:
         AES_manager.update_encryptor(message)
         en_vote = AES_manager.finalize_encryptor()
 
+
         en_AES_key = CTF_public_key.encrypt(
             AES_key,
             padding.OAEP(
