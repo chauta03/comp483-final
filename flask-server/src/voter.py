@@ -12,7 +12,7 @@ class Voter:
 
     # Initializes voter with ID along with RSA encryption
     def __init__(self):
-        self.my_ID = random.randint(0, 10 ** 5 - 1)
+        self.my_ID = random.randint(0, 2 ** 32 - 1)
         self.validation_num = None
         self.private_key = rsa.generate_private_key(
             public_exponent=65537,
@@ -25,14 +25,10 @@ class Voter:
     # Getter function for RSA public key
     def get_public_key(self):
         return self.public_key
-    
+
     # Get id number
     def get_id(self):
         return self.my_ID
-    
-    # Get validation number
-    def get_validation_num(self):
-        return self.validation_num
 
     # Updates used validation number by decrypting validation number using RSA encrypted AES keys
     def set_validation_num(self, en_validation_num, en_AES_key, en_AES_iv):
@@ -55,8 +51,9 @@ class Voter:
 
         # Decrypts and updates validation number with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_validation_num)
-        self.validation_num = int(AES_manager.finalize_decryptor().decode('utf-8'))
+        temp_message = AES_manager.update_decryptor(en_validation_num)
+        temp_message += AES_manager.finalize_decryptor()
+        self.validation_num = int(temp_message.decode('utf-8'))
 
 
     # Given a public RSA key, encrypts CLA AES key with RSA public key and returns RSA encrypted AES key along with AES encrypted validation number
@@ -69,8 +66,8 @@ class Voter:
         # Creates and encrypts message to send with AES
         message = f"{self.my_ID},{self.validation_num},{vote}".encode('utf-8')
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(message)
-        en_vote = AES_manager.finalize_encryptor()
+        en_vote = AES_manager.update_encryptor(message)
+        en_vote += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = CTF_public_key.encrypt(

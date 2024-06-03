@@ -17,6 +17,7 @@ class CTF:
         )
         self.public_key = self.private_key.public_key()
         self.candidate_dict = {}
+        self.used_validation_set = set()
 
 
     # Getter function for RSA public key
@@ -45,8 +46,9 @@ class CTF:
 
         # Decrypts validation set with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_validation_set)
-        self.used_validation_set = eval(AES_manager.finalize_decryptor().decode('utf-8'))
+        temp_message = AES_manager.update_decryptor(en_validation_set)
+        temp_message += AES_manager.finalize_decryptor()
+        self.used_validation_set = eval(temp_message.decode('utf-8'))
 
 
     # Decrypts vote using RSA encrypted AES keys
@@ -70,8 +72,9 @@ class CTF:
 
         # Decrypts vote with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_vote)
-        return AES_manager.finalize_decryptor().decode('utf-8')
+        temp_message = AES_manager.update_decryptor(en_vote)
+        temp_message += AES_manager.finalize_decryptor()
+        return temp_message.decode('utf-8')
 
 
     # Tallies an individual vote record
@@ -98,3 +101,8 @@ class CTF:
         for candidate in self.candidate_dict.keys():
             print(f"{candidate}: {len(self.candidate_dict[candidate])}")
         print(f"\nRaw results{self.candidate_dict}")
+
+
+    #  Get raw result
+    def get_raw_result(self):
+        return self.candidate_dict

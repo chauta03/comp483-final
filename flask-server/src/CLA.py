@@ -23,8 +23,8 @@ class CLA:
         # Creates and encrypts message to send with AES
         message = repr(self.validation_number_set).encode('utf-8')
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(message)
-        en_validation_set = AES_manager.finalize_encryptor()
+        en_validation_set = AES_manager.update_encryptor(message)
+        en_validation_set += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = CTF_public_key.encrypt(
@@ -58,8 +58,8 @@ class CLA:
         # Creates and encrypts message to send with AES
         validation_num = self.get_random_validation_number()
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(str(validation_num).encode('utf-8'))
-        en_validation_num = AES_manager.finalize_encryptor()
+        en_validation_num = AES_manager.update_encryptor(str(validation_num).encode('utf-8'))
+        en_validation_num += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = voter_public_key.encrypt(
@@ -86,9 +86,9 @@ class CLA:
     # Generates a random validation number
     def get_random_validation_number(self):
         while True:
-            number = random.randint(0, 10 ** 3 - 1)
+            number = random.randint(0, 2 ** 32 - 1)
 
-            if len(self.validation_number_set) >= 2 ** 10:
+            if len(self.validation_number_set) >= 2 ** 32:
                 raise Exception("No more validation numbers available")
 
             if number not in self.validation_number_set:

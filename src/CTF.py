@@ -17,6 +17,7 @@ class CTF:
         )
         self.public_key = self.private_key.public_key()
         self.candidate_dict = {}
+        self.used_validation_set = set()
 
 
     # Getter function for RSA public key
@@ -100,3 +101,8 @@ class CTF:
         for candidate in self.candidate_dict.keys():
             print(f"{candidate}: {len(self.candidate_dict[candidate])}")
         print(f"\nRaw results{self.candidate_dict}")
+
+
+    #  Get raw result
+    def get_raw_result(self):
+        return self.candidate_dict

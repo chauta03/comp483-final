@@ -12,8 +12,8 @@ class EncryptionManager:
                             backend=default_backend())
         self.encryptor = aesContext.encryptor()
         self.decryptor = aesContext.decryptor()
-        self.padder = padding.PKCS7(1792).padder()       # padder size limits max size of any message encrypted (set to 1792 to maximum message length given block size)
-        self.unpadder = padding.PKCS7(1792).unpadder()   # padder size limits max size of any message encrypted (set to 1792 to maximum message length given block size)
+        self.padder = padding.PKCS7(128).padder()
+        self.unpadder = padding.PKCS7(128).unpadder()
 
     def update_encryptor(self, plaintext):
         return self.encryptor.update(self.padder.update(plaintext))

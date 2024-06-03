@@ -27,6 +27,10 @@ class Voter:
         return self.public_key
 
 
+    # Get id number
+    def get_id(self):
+        return self.my_ID
+    
     # Updates used validation number by decrypting validation number using RSA encrypted AES keys
     def set_validation_num(self, en_validation_num, en_AES_key, en_AES_iv):
 
