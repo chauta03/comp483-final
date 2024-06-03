@@ -86,9 +86,9 @@ class CLA:
     # Generates a random validation number
     def get_random_validation_number(self):
         while True:
-            number = random.randint(0, 10 ** 3 - 1)
+            number = random.randint(0, 2 ** 32 - 1)
 
-            if len(self.validation_number_set) >= 2 ** 10:
+            if len(self.validation_number_set) >= 2 ** 32:
                 raise Exception("No more validation numbers available")
 
             if number not in self.validation_number_set:

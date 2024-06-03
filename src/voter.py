@@ -12,7 +12,7 @@ class Voter:
 
     # Initializes voter with ID along with RSA encryption
     def __init__(self):
-        self.my_ID = random.randint(0, 10 ** 5 - 1)
+        self.my_ID = random.randint(0, 2 ** 32 - 1)
         self.validation_num = None
         self.private_key = rsa.generate_private_key(
             public_exponent=65537,
