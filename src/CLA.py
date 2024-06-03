@@ -23,8 +23,8 @@ class CLA:
         # Creates and encrypts message to send with AES
         message = repr(self.validation_number_set).encode('utf-8')
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(message)
-        en_validation_set = AES_manager.finalize_encryptor()
+        en_validation_set = AES_manager.update_encryptor(message)
+        en_validation_set += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = CTF_public_key.encrypt(
@@ -58,8 +58,8 @@ class CLA:
         # Creates and encrypts message to send with AES
         validation_num = self.get_random_validation_number()
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(str(validation_num).encode('utf-8'))
-        en_validation_num = AES_manager.finalize_encryptor()
+        en_validation_num = AES_manager.update_encryptor(str(validation_num).encode('utf-8'))
+        en_validation_num += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = voter_public_key.encrypt(

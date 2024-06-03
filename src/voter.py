@@ -48,8 +48,9 @@ class Voter:
 
         # Decrypts and updates validation number with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_validation_num)
-        self.validation_num = int(AES_manager.finalize_decryptor().decode('utf-8'))
+        temp_message = AES_manager.update_decryptor(en_validation_num)
+        temp_message += AES_manager.finalize_decryptor()
+        self.validation_num = int(temp_message.decode('utf-8'))
 
 
     # Given a public RSA key, encrypts CLA AES key with RSA public key and returns RSA encrypted AES key along with AES encrypted validation number
@@ -62,8 +63,8 @@ class Voter:
         # Creates and encrypts message to send with AES
         message = f"{self.my_ID},{self.validation_num},{vote}".encode('utf-8')
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_encryptor(message)
-        en_vote = AES_manager.finalize_encryptor()
+        en_vote = AES_manager.update_encryptor(message)
+        en_vote += AES_manager.finalize_encryptor()
 
         # Encrypts AES key and IV with RSA
         en_AES_key = CTF_public_key.encrypt(

@@ -45,8 +45,9 @@ class CTF:
 
         # Decrypts validation set with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_validation_set)
-        self.used_validation_set = eval(AES_manager.finalize_decryptor().decode('utf-8'))
+        temp_message = AES_manager.update_decryptor(en_validation_set)
+        temp_message += AES_manager.finalize_decryptor()
+        self.used_validation_set = eval(temp_message.decode('utf-8'))
 
 
     # Decrypts vote using RSA encrypted AES keys
@@ -70,8 +71,9 @@ class CTF:
 
         # Decrypts vote with AES
         AES_manager = AES.EncryptionManager(AES_key, AES_iv)
-        AES_manager.update_decryptor(en_vote)
-        return AES_manager.finalize_decryptor().decode('utf-8')
+        temp_message = AES_manager.update_decryptor(en_vote)
+        temp_message += AES_manager.finalize_decryptor()
+        return temp_message.decode('utf-8')
 
 
     # Tallies an individual vote record
