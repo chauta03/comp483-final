@@ -1,3 +1,4 @@
+from collections import defaultdict
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import hashes
@@ -16,7 +17,7 @@ class CTF:
             backend=default_backend()
         )
         self.public_key = self.private_key.public_key()
-        self.candidate_dict = {}
+        self.candidate_dict = defaultdict(list)
         self.used_validation_set = set()
 
 
@@ -24,6 +25,8 @@ class CTF:
     def get_public_key(self):
         return self.public_key
 
+    def get_validation_set(self):
+        return self.used_validation_set
 
     # Updates used validation numbers set by decrypting validation set using RSA encrypted AES keys
     def update_validation_set(self, en_validation_set, en_AES_key, en_AES_iv):
@@ -79,7 +82,6 @@ class CTF:
 
     # Tallies an individual vote record
     def tally_vote(self, en_vote, en_AES_key, en_AES_iv):
-
         # Gets decrypted vote information
         id, validation, candidate = self.decrypt_vote(en_vote, en_AES_key, en_AES_iv).split(',')
 
@@ -89,10 +91,7 @@ class CTF:
             return
 
         # Records vote
-        if candidate not in self.candidate_dict.keys():
-            self.candidate_dict[candidate] = [id]
-        else:
-            self.candidate_dict[candidate].append(id)
+        self.candidate_dict[candidate].append(id)
 
 
     # Outputs election outcomes
