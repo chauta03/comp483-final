@@ -1,21 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Vote from './components/Vote';
 import VoteList from './components/VoteList';
+import './App.css';
+
 function App() {
-
-  const [data, setData] = useState([{}])
-
-  useEffect(() => {
-    fetch('/vote')
-      .then(res => res.json())
-      .then(data => setData(data))
-                    console.log(data)
-  } , []) 
-
-  const handleClick = (e) => {
-    e.preventDefault();
-    console.log('The link was clicked.');
-  }
 
   return (
     // <div>
@@ -34,9 +22,14 @@ function App() {
     // </div>
 
     <div className="App">
-          <h1>Voting App</h1>
-          <Vote />
-          <VoteList />
+      <p className='left-half'>
+        <h1>Voting with TF</h1>
+        <Vote />
+      </p>
+      <p className='right-half'>
+        <h1>Results</h1>
+        <VoteList />
+      </p>
       </div>
   );
 }
