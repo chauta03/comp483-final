@@ -1,3 +1,4 @@
+from collections import defaultdict
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import hashes
@@ -16,13 +17,15 @@ class CTF:
             backend=default_backend()
         )
         self.public_key = self.private_key.public_key()
-        self.candidate_dict = {}
+        self.candidate_dict = defaultdict(list)
         self.used_validation_set = set()
-
 
     # Getter function for RSA public key
     def get_public_key(self):
         return self.public_key
+
+    def get_validation_set(self):
+        return self.used_validation_set
 
 
     # Updates used validation numbers set by decrypting validation set using RSA encrypted AES keys
@@ -36,6 +39,7 @@ class CTF:
                 algorithm=hashes.SHA256(),
                 label=None  # rarely used. Just leave it 'None'
             ))
+
         AES_iv = self.private_key.decrypt(
             en_AES_iv,
             padding.OAEP(
@@ -51,9 +55,9 @@ class CTF:
         self.used_validation_set = eval(temp_message.decode('utf-8'))
 
 
+
     # Decrypts vote using RSA encrypted AES keys
     def decrypt_vote(self, en_vote, en_AES_key, en_AES_iv):
-
         # Decrypts AES key and IV with RSA
         AES_key = self.private_key.decrypt(
             en_AES_key,
@@ -83,16 +87,8 @@ class CTF:
         # Gets decrypted vote information
         id, validation, candidate = self.decrypt_vote(en_vote, en_AES_key, en_AES_iv).split(',')
 
-        # Checks that vote is not from double voter
-        if validation in self.used_validation_set:
-            print("Vote already cast by given validation number")
-            return
-
         # Records vote
-        if candidate not in self.candidate_dict.keys():
-            self.candidate_dict[candidate] = [id]
-        else:
-            self.candidate_dict[candidate].append(id)
+        self.candidate_dict[candidate].append(id)
 
 
     # Outputs election outcomes
