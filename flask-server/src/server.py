@@ -1,48 +1,73 @@
+from collections import defaultdict
 from flask import Flask, request, jsonify
-import sqlite3
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.asymmetric import rsa
 import random
-import voter 
-import CLA
-import CTF
-import json
+import sqlite3
+import CLA, voter, CTF
+import helper
 
 app = Flask(__name__)
 
-CLA_object = CLA.CLA()
+candidates = ["John", "Noah", "Sophie", "Lexi"]
 CTF_object = CTF.CTF()
 
-# Runs random voting simulation
-candidates = ["John", "Noah", "Sophie", "Lexi"]
-cipher_votes = []
 
 # init db
 def init_sqlite_db():
     conn = sqlite3.connect('database.db')
     print("Opened database successfully")
 
-    c = conn.cursor()
-    conn.execute('CREATE TABLE IF NOT EXISTS votes (id INTEGER PRIMARY KEY, candidate TEXT, votes INTEGER)')
-    print("Table created successfully")
+    conn.execute('CREATE TABLE IF NOT EXISTS voters (id INTEGER PRIMARY KEY, identification INTEGER, validation INTEGER, candidate TEXT)')
+    print("Table voters created successfully")
+
+    conn.execute('CREATE TABLE IF NOT EXISTS cipher_votes (id INTEGER PRIMARY KEY, en_vote BLOB, en_AES_key BLOB, en_AES_iv BLOB)')
+
     conn.close()
 
 init_sqlite_db()
 
 @app.route('/add-vote', methods=['POST'])
 def add_vote():
-    msg = None
+
+    my_ID = random.randint(0, 2 ** 32 - 1)
+    validation_num = None
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+        backend=default_backend()
+    )
+    public_key = private_key.public_key()
+
+    # get validation number set
+    validation_num_set = helper.query_db('SELECT validation FROM voters')
+
+    en_validation_num, en_AES_key, en_AES_iv = CLA.get_encrypted_val_num(public_key, validation_num_set)
+    validation_num = voter.set_validation_num(private_key, en_validation_num, en_AES_key, en_AES_iv)
+
+    post_data = request.get_json()
+    candidate = post_data['candidate']
     try:
-        post_data = request.get_json()
-        candidate = post_data['candidate']
         with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM votes WHERE candidate=?", (candidate,))
-            row = cursor.fetchone()
-            if row:
-                cursor.execute("UPDATE votes SET votes = votes + 1 WHERE candidate=?", (candidate,))
-            else:
-                cursor.execute("INSERT INTO votes (candidate, votes) VALUES (?, 1)", (candidate,))
+            cur = conn.cursor()
+            cur.execute('INSERT INTO voters (identification, validation, candidate) VALUES (?, ?, ?)', (my_ID, validation_num, candidate))
             conn.commit()
-            msg = "Vote added successfully"
+    except Exception as e:
+        conn.rollback()
+        print("Error occurred in INSERT INTO voters: " + str(e))
+    finally:
+        conn.close()
+    
+    # Have voter create encrypted vote to later tally
+    en_vote, en_AES_key, en_AES_iv = voter.get_encrypted_vote(my_ID, validation_num, candidate, CTF_object.get_public_key())
+
+    try:
+        with sqlite3.connect('database.db') as conn:
+            cur = conn.cursor()
+            cur.execute('INSERT INTO cipher_votes (en_vote, en_AES_key, en_AES_iv) VALUES (?, ?, ?)', (en_vote, en_AES_key, en_AES_iv))
+            conn.commit()
+            msg = "Record successfully added"
+
     except Exception as e:
         conn.rollback()
         msg = "Error occurred: " + str(e)
@@ -50,39 +75,28 @@ def add_vote():
         conn.close()
         return jsonify(msg=msg)
 
-@app.route('/get-votes', methods=['GET'])
+@app.route('/get-votes')
 def get_votes():
-    records = []
-
+    raw_data = defaultdict(list)
+    
     try:
         with sqlite3.connect('database.db') as conn:
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM votes")
-            records = cursor.fetchall()
+            validation_num_set = helper.query_db('SELECT validation FROM voters')
+            en_validation_set, en_AES_key, en_AES_iv = CLA.get_validation_numbers(CTF_object.get_public_key(), validation_num_set)
+            CTF_object.update_validation_set(en_validation_set, en_AES_key, en_AES_iv)
+
+            rows = helper.query_db('SELECT * FROM cipher_votes')
+            for row in rows:
+                en_vote, en_AES_key, en_AES_iv = row[1], row[2], row[3]
+                id, validation, candidate = CTF_object.decrypt_vote(en_vote, en_AES_key, en_AES_iv).split(',')
+                raw_data[candidate].append(id)
+
+            print(raw_data)
+
     except Exception as e:
-        conn.rollback()
-        print("Error occurred: " + str(e))
+        print("Error occurred in SELECT * FROM cipher_votes: " + str(e))
     finally:
-        conn.close()
-        return jsonify(records)
-    
-
-# Member API route
-# @app.route('/vote')
-# def startVote():
-#     voter_object = voter.Voter()
-#     en_validation_num, en_AES_key, en_AES_iv = CLA_object.get_encrypted_val_num(voter_object.get_public_key())
-#     voter_object.set_validation_num(en_validation_num, en_AES_key, en_AES_iv)
-
-#     # Have voter create encrypted vote to later tally
-#     vote = random.choice(candidates)
-#     en_vote, en_AES_key, en_AES_iv = voter_object.get_encrypted_vote(vote, CTF_object.get_public_key())
-#     cipher_votes.append([en_vote, en_AES_key, en_AES_iv])
-
-#     id = voter_object.get_id()
-#     validation_num = voter_object.get_validation_num()
-#     return {"info": [id, validation_num]}
-
+        return jsonify(raw_data)
 
 if __name__ == '__main__':
     app.run(debug=True)
