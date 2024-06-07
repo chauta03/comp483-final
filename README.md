@@ -1,8 +1,9 @@
-## comp483-final
+# comp483-final
 
 # Final Project of Cryptography
 
-# Author: Chau Ta, Cole Koryto
+# Author: 
+Chau Ta, Cole Koryto
 
 ## Available Scripts
 
@@ -35,5 +36,5 @@ underlying cryptographical systems utlized in this voting system without having 
 entire website code base. 
 
 ## Reference
-Practical Cryptography in Python by Nielson & Monson: [https://github.com/Apress/practical-cryptography-in-python]https://github.com/Apress/practical-cryptography-in-python
+Practical Cryptography in Python by Nielson & Monson: [https://github.com/Apress/practical-cryptography-in-python](https://github.com/Apress/practical-cryptography-in-python)
 
