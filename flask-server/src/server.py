@@ -49,7 +49,7 @@ def add_vote():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute('INSERT INTO voters (identification, validation, candidate) VALUES (?, ?, ?)', (my_ID, validation_num, candidate))
+            cur.execute('INSERT INTO voters (candidate) VALUES (?)', (validation_num))
             conn.commit()
     except Exception as e:
         conn.rollback()

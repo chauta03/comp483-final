@@ -49,8 +49,6 @@ function Vote() {
                 backgroundColor: '#F0EBE3',
                 borderColor: 'white',
                 borderWidth: 3,
-                font: 'white',
-                color: 'white',
             }
         ],
     };
@@ -107,7 +105,9 @@ function Vote() {
             
             <p className='VoteList-Vote-Chart'>
                 <p className='VoteList-title-Chart'>Votes Chart</p>
-                <Bar classNam='VoteList-bar' data={chartData} options={chartOptions} />
+                <p className='VoteList-bar'>
+                    <Bar data={chartData} options={chartOptions} />
+                </p>
             </p>
             
         </div>
