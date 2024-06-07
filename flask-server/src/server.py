@@ -9,7 +9,6 @@ import helper
 
 app = Flask(__name__)
 
-candidates = ["John", "Noah", "Sophie", "Lexi"]
 CTF_object = CTF.CTF()
 
 
@@ -66,14 +65,12 @@ def add_vote():
             cur = conn.cursor()
             cur.execute('INSERT INTO cipher_votes (en_vote, en_AES_key, en_AES_iv) VALUES (?, ?, ?)', (en_vote, en_AES_key, en_AES_iv))
             conn.commit()
-            msg = "Record successfully added"
 
     except Exception as e:
         conn.rollback()
-        msg = "Error occurred: " + str(e)
     finally:
         conn.close()
-        return jsonify(msg=msg)
+        return jsonify(my_ID)
 
 @app.route('/get-votes')
 def get_votes():
@@ -90,8 +87,6 @@ def get_votes():
                 en_vote, en_AES_key, en_AES_iv = row[1], row[2], row[3]
                 id, validation, candidate = CTF_object.decrypt_vote(en_vote, en_AES_key, en_AES_iv).split(',')
                 raw_data[candidate].append(id)
-
-            print(raw_data)
 
     except Exception as e:
         print("Error occurred in SELECT * FROM cipher_votes: " + str(e))
