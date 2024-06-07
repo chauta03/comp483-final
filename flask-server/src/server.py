@@ -17,7 +17,7 @@ def init_sqlite_db():
     conn = sqlite3.connect('database.db')
     print("Opened database successfully")
 
-    conn.execute('CREATE TABLE IF NOT EXISTS voters (id INTEGER PRIMARY KEY, identification INTEGER, validation INTEGER, candidate TEXT)')
+    conn.execute('CREATE TABLE IF NOT EXISTS voters (id INTEGER PRIMARY KEY, validation INTEGER)')
     print("Table voters created successfully")
 
     conn.execute('CREATE TABLE IF NOT EXISTS cipher_votes (id INTEGER PRIMARY KEY, en_vote BLOB, en_AES_key BLOB, en_AES_iv BLOB)')
@@ -49,7 +49,7 @@ def add_vote():
     try:
         with sqlite3.connect('database.db') as conn:
             cur = conn.cursor()
-            cur.execute('INSERT INTO voters (candidate) VALUES (?)', (validation_num))
+            cur.execute('INSERT INTO voters (validation) VALUES (?)', (validation_num,))
             conn.commit()
     except Exception as e:
         conn.rollback()
