@@ -9,7 +9,7 @@ Chau Ta, Cole Koryto
 
 In the project directory, you can run:
 
-### Download all dependencies
+### Download all dependencies: `npm install`
 
 ### Frontend: go in client folder and `npm run start`
 
