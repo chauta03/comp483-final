@@ -9,9 +9,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 5vh;
+    background: url('../images/pixel.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    width: 100vw;
+    font: 1.5em 'Pixel-Code';
 }
 
+.Vote-Question {
+    font: 1.75em 'Pixel-Code';
+    color: #FFCCFC;
+
+}
 .Vote-Button-Container {
     display: flex;
     flex-direction: row;
@@ -40,13 +53,23 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0px;
 }
+
+
 .VoteList-title {
     font: 5em 'Pixel-Code';
     color: rgba(54, 114, 114, 0.6);
     padding: 20px;
 }
 
+.VoteList-list {
+    padding: 0 50px 5px 50px;
+
+}
+.VoteList-table {
+    padding: 20px;
+}
 .VoteList-title-Chart {
     color: #F0EBE3;
     font: 5em 'Pixel-Code';

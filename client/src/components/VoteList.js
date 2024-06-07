@@ -43,7 +43,6 @@ function VoteList() {
         ],
     };
 
-    // I want to style this
     const chartOptions = {
         scales: {
             y: {

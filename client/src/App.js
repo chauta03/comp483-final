@@ -7,14 +7,8 @@ function App() {
 
   return (
     <div className="App">
-      <p className='App-Question'>
-        <p className='question'>What is your favorite programming language?</p>
         <Vote />
-      </p>
-      <p className='App-Chart'>
-        <VoteList />
-      </p>
-      </div>
+    </div>
   );
 }
 
