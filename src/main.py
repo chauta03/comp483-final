@@ -31,12 +31,16 @@ def main():
     CTF_object.update_validation_set(en_validation_set, en_AES_key, en_AES_iv)
 
 
+
     # Tallies votes with CTF
     for en_vote, en_AES_key, en_AES_iv in cipher_votes:
         CTF_object.tally_vote(en_vote, en_AES_key, en_AES_iv)
 
     # Outputs election results
     CTF_object.get_election_results()
+
+    x = CTF_object.get_raw_result()
+    print(x)
 
 if __name__ == "__main__":
     main()

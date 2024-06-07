@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Code Font */
+@font-face {
+  font-family: "Pixel-Code";
+  src: local("Pixel-Code"),
+    url("./fonts/ttf/PixelCode.ttf") format("truetype");
+}
