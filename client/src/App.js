@@ -6,28 +6,12 @@ import './App.css';
 function App() {
 
   return (
-    // <div>
-    //   <button onClick={handleClick}>Click me</button>
-      
-    //   {(typeof data.info === 'undefined') ? (
-    //     <p>Loading...</p>
-    //   ) : (
-    //     data.info.map((i, index) => (
-    //       <div key={index}>
-    //         <h1>{i}</h1>
-    //       </div>
-    //     ))
-    //   )}
-
-    // </div>
-
     <div className="App">
-      <p className='left-half'>
-        <h1>Voting with TF</h1>
+      <p className='App-Question'>
+        <p className='question'>What is your favorite programming language?</p>
         <Vote />
       </p>
-      <p className='right-half'>
-        <h1>Results</h1>
+      <p className='App-Chart'>
         <VoteList />
       </p>
       </div>

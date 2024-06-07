@@ -1,0 +1,84 @@
+.VoteList-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Vote-Container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5vh;
+}
+
+.Vote-Button-Container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 5vw;
+    width: 100%;
+}
+
+.Vote-Button {
+    font: 1.5em 'Pixel-Code';
+    background-color: #FFB7B7;
+    color: #A0153E;
+    border: 2px solid #5D0E41;
+    border-radius: 5px;
+    padding: 7px 20px;
+    cursor: pointer;
+}
+
+.Confirm-Line {
+    font: 0.75em 'Pixel-Code';
+    color: #FFFDB5;
+}
+
+.VoteList-container {
+    width: 100%; /* Ensures the div takes the full width of the viewport */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.VoteList-title {
+    font: 5em 'Pixel-Code';
+    color: rgba(54, 114, 114, 0.6);
+    padding: 20px;
+}
+
+.VoteList-title-Chart {
+    color: #F0EBE3;
+    font: 5em 'Pixel-Code';
+    padding: 20px;
+}
+
+.VoteList-table {
+    border: 2px solid forestgreen;
+    margin: 0 auto;
+    height: auto;
+    font: 2em 'Pixel-Code'; 
+    padding: 20px;
+}
+
+.VoteList-id-list {
+    text-align: left;
+    padding-left: 100px;
+}
+
+.VoteList-show-ID {
+    width: 100vw;
+    padding: 100px 0;
+    padding-bottom: 20vh;
+    color: black;
+    background: #F0EBE3;
+}
+.VoteList-Vote-Chart {
+    width: 100vw;
+    padding-top: 80px;
+    background-color: rgba(54, 114, 114, 0.6);
+}
+
+.VoteList-bar {
+    color: white;
+}
